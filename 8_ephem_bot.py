@@ -14,24 +14,42 @@
 """
 import logging
 
+import ephem
+from datetime import datetime
+from settings import TGBOT_KEY
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
-                    filename='bot.log')
+                    filename='bot.log')    
 
-
-PROXY = {
-    'proxy_url': 'socks5://t1.learn.python.ru:1080',
-    'urllib3_proxy_kwargs': {
-        'username': 'learn',
-        'password': 'python'
-    }
-}
+def planet_info(update, context):
+    user_request = update.message.text
+    planet = user_request.split()[1]
+    if planet == 'Mercury':
+        planet = ephem.Mercury()
+    elif planet == 'Venus':
+        planet = ephem.Venus()
+    elif planet == 'Mars':
+        planet = ephem.Mars()
+    elif planet == 'Jupiter':
+        planet = ephem.Jupiter()
+    elif planet == 'Saturn':
+        planet = ephem.Saturn()
+    elif planet == 'Uranus':
+        planet = ephem.Uranus()
+    elif planet == 'Neptune':
+        planet = ephem.Neptune()
+    else:
+        response = 'для этой планеты нет созвездия'
+        update.message.reply_text(response)
+    planet.compute(datetime.now())
+    response = ephem.constellation(planet)[1]
+    update.message.reply_text(f'В созвездии {response}')
 
 
 def greet_user(update, context):
-    text = 'Вызван /start'
+    text = 'Доступные команды:\n/planet'
     print(text)
     update.message.reply_text(text)
 
@@ -39,14 +57,15 @@ def greet_user(update, context):
 def talk_to_me(update, context):
     user_text = update.message.text
     print(user_text)
-    update.message.reply_text(text)
+    update.message.reply_text(user_text)
 
 
 def main():
-    mybot = Updater("КЛЮЧ, КОТОРЫЙ НАМ ВЫДАЛ BotFather", request_kwargs=PROXY, use_context=True)
+    mybot = Updater(TGBOT_KEY, use_context=True)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
+    dp.add_handler(CommandHandler("planet", planet_info))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     mybot.start_polling()

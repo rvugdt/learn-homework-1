@@ -14,12 +14,36 @@
 
 """
 
+def what_to_do(age):
+    if age < 7:
+        answer = 'Возможно вам стоит посещать детский сад.'
+    elif age < 19:
+        answer = 'Возможно вам стоит посещать школу.'
+    elif age < 25:
+        answer = 'Возможно вам стоит посещать ВУЗ.'
+    elif age >= 25:
+        answer = 'Возможно вам стоит пойти работать.'
+    return answer
+
 def main():
     """
     Эта функция вызывается автоматически при запуске скрипта в консоли
     В ней надо заменить pass на ваш код
     """
-    pass
+
+    age = input('Сколько вам полных лет?\n > ')
+    try:
+        age = int(age)
+    except ValueError as e:
+        print('Неправильное значение. Введите целое число.')
+    finally:
+        if age < 0:
+            age *= -1
+        print(f'Ваш возраст: {age}')
+        result = what_to_do(age)
+        print(result)
+
 
 if __name__ == "__main__":
     main()
+
