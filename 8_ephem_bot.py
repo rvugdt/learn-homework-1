@@ -25,27 +25,12 @@ logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
 
 def planet_info(update, context):
     user_request = update.message.text
-    planet = user_request.split()[1]
-    if planet == 'Mercury':
-        planet = ephem.Mercury()
-    elif planet == 'Venus':
-        planet = ephem.Venus()
-    elif planet == 'Mars':
-        planet = ephem.Mars()
-    elif planet == 'Jupiter':
-        planet = ephem.Jupiter()
-    elif planet == 'Saturn':
-        planet = ephem.Saturn()
-    elif planet == 'Uranus':
-        planet = ephem.Uranus()
-    elif planet == 'Neptune':
-        planet = ephem.Neptune()
+    planet_name = user_request.split()[1].capitalize()
+    if hasattr(ephem, planet_name):
+        planet = getattr(ephem, planet_name)(datetime.now())
+        update.message.reply_text(f'Планета {planet_name} находится в созвездии {ephem.constellation(planet)[1]}')
     else:
-        response = 'для этой планеты нет созвездия'
-        update.message.reply_text(response)
-    planet.compute(datetime.now())
-    response = ephem.constellation(planet)[1]
-    update.message.reply_text(f'В созвездии {response}')
+        update.message.reply_text(f'Извините, для планеты {planet_name} созвездий не найдено. Попробуйте еще раз.')
 
 
 def greet_user(update, context):

@@ -16,28 +16,18 @@
 """
 
 def compare_strings(str1, str2):
-    if type(str1) is not str or type(str2) is not str:
-        # input() же по дефолту только строки возращает вроде, или я не прав?
+    if isinstance(str1, str) and isinstance(str2, str):
         result = 0
     elif str1 == str2:
         result = 1
-    elif len(str1) > len(str2):
+    elif str1 != str2 and len(str1) > len(str2):
         result = 2
-    elif str2 == 'learn':
+    elif str1 != str2 and str2 == 'learn':
         result = 3
-    elif len(str2) > len(str1):
-        result = 'вторая строка длиннее первой'
-    else:
-        result = 'строки одной длины но с разными наборами символов'
     return result
 
 def main():
-    """
-    Эта функция вызывается автоматически при запуске скрипта в консоли
-    В ней надо заменить pass на ваш код
-    """
     try:
-      print('AHTUNG: тут я не уверен что до конца понял задание, поэтому добавил отсебятины.')
       print('hint: Ctrl+C для выхода')
       while True:
           str1 = input('\nПервая строка: ')
